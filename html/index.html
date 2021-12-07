@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Peso de Papel</title>
+		<script>
+			let carregaAnotacao = () => {
+				let anotacoes = fetch('/notas')
+				anotacoes.then(response => response.json()).then(
+					function(data) {
+						let notas = document.getElementById("anotacoes");
+						notas.innerHTML = data
+					}
+				)
+			}
+
+			let adicionaAnotacao = () => {
+				let notas = document.getElementById("anotacoes");
+				let novaAnotacao = `
+					<input id='tituloAnotacao' placeholder="Titulo"/>
+					<input id='corpoAnotacao' type='text' placeholder="Anotação"/>
+					<button onclick="salvarAnotacao()">Salvar</button>
+				`
+				notas.innerHTML = novaAnotacao + notas.innerHTML
+			}
+			let salvarAnotacao = () => {
+				let titulo = document.getElementById("tituloAnotacao").value;
+				let corpo = document.getElementById("corpoAnotacao").value;
+				let anotacao = `<strong>${titulo}</strong><p>${corpo}</p>`
+				fetch('/notas', {
+					headers: {
+						'Content-Type': 'application/json'
+					},
+				method: "POST",
+				body: JSON.stringify({anotacao: anotacao})
+				})
+				carregaAnotacao()
+			}
+		</script>
+	</head>
+	<body>
+		<header>
+			<h1>Peso de Papel</h1>
+			<input placeholder="Pesquisar"/>
+			<button onclick="adicionaAnotacao()">Adicionar anotação</button>
+		</header>
+		<div id="anotacoes"></div>
+	</body>
+</html>
